@@ -1,6 +1,7 @@
+APIS=$(shell find ../apis/bobadojo -name "*.proto")
+
 openapi:
-	protoc \
-		../apis/bobadojo/stores/v1/stores.proto \
+	protoc ${APIS} \
 		--proto_path='../apis' \
 		--openapi_out='.'
 

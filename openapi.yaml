@@ -7,39 +7,12 @@ info:
     description: A store locator API
     version: 0.0.1
 paths:
-    /v1/stores:
-        get:
-            tags:
-                - StoreLocator
-            description: Returns a list of all stores in the store.
-            operationId: StoreLocator_ListStores
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListStoresResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /v1/stores/{store}:
+    /v1/stores/store:
         get:
             tags:
                 - StoreLocator
             description: Returns a specific store.
             operationId: StoreLocator_GetStore
-            parameters:
-                - name: store
-                  in: path
-                  description: The ID of the store resource to retrieve.
-                  required: true
-                  schema:
-                    type: integer
-                    format: int64
             responses:
                 "200":
                     description: OK
@@ -53,8 +26,73 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/stores:find:
+        get:
+            tags:
+                - StoreLocator
+            description: Returns a list of all stores in the store.
+            operationId: StoreLocator_FindStores
+            parameters:
+                - name: boundingBox.max.latitude
+                  in: query
+                  description: Latitude of the point.
+                  schema:
+                    type: number
+                    format: float
+                - name: boundingBox.max.longitude
+                  in: query
+                  description: Longitude of the point.
+                  schema:
+                    type: number
+                    format: float
+                - name: boundingBox.min.latitude
+                  in: query
+                  description: Latitude of the point.
+                  schema:
+                    type: number
+                    format: float
+                - name: boundingBox.min.longitude
+                  in: query
+                  description: Longitude of the point.
+                  schema:
+                    type: number
+                    format: float
+                - name: center.latitude
+                  in: query
+                  description: Latitude of the point.
+                  schema:
+                    type: number
+                    format: float
+                - name: center.longitude
+                  in: query
+                  description: Longitude of the point.
+                  schema:
+                    type: number
+                    format: float
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FindStoresResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
+        FindStoresResponse:
+            type: object
+            properties:
+                stores:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Store'
+                    description: Stores in the datastore.
+            description: Response from FindStores.
         GoogleProtobufAny:
             type: object
             properties:
@@ -63,15 +101,6 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListStoresResponse:
-            type: object
-            properties:
-                stores:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Store'
-                    description: Stores in the datastore.
-            description: Response to ListStores call.
         Status:
             type: object
             properties:
@@ -89,6 +118,8 @@ components:
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
         Store:
+            required:
+                - id
             type: object
             properties:
                 id:
@@ -97,7 +128,7 @@ components:
                     format: int64
                 description:
                     type: string
-                    description: An optional description.
+                    description: A description of the store
             description: A store resource.
 tags:
     - name: StoreLocator
