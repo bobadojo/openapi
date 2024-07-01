@@ -3,16 +3,34 @@
 
 openapi: 3.0.3
 info:
-    title: StoreLocator API
-    description: A store locator API
+    title: ""
     version: 0.0.1
 paths:
+    /v1/menus/store:
+        get:
+            tags:
+                - Menus
+            description: Returns a menu for a specific store.
+            operationId: Menus_GetMenu
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Menu'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/stores/store:
         get:
             tags:
-                - StoreLocator
+                - Stores
             description: Returns a specific store.
-            operationId: StoreLocator_GetStore
+            operationId: Stores_GetStore
             responses:
                 "200":
                     description: OK
@@ -29,9 +47,9 @@ paths:
     /v1/stores:find:
         get:
             tags:
-                - StoreLocator
+                - Stores
             description: Returns a list of all stores in the store.
-            operationId: StoreLocator_FindStores
+            operationId: Stores_FindStores
             parameters:
                 - name: boundingBox.max.latitude
                   in: query
@@ -101,6 +119,19 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Menu:
+            required:
+                - id
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: A unique id.
+                    format: int64
+                description:
+                    type: string
+                    description: A description of the menu
+            description: A store resource.
         Status:
             type: object
             properties:
@@ -131,4 +162,7 @@ components:
                     description: A description of the store
             description: A store resource.
 tags:
-    - name: StoreLocator
+    - name: Menus
+      description: Get information about store menus.
+    - name: Stores
+      description: Locate stores and related details.
